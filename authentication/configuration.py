@@ -1,7 +1,7 @@
 from datetime import timedelta
 import os
 
-databaseUrl=os.environ["DATABASE_URL"] if os.environ["DATABASE_URL"] else "localhost:3308" #if "PRODUCTION" in os.environ else "local
+databaseUrl=os.environ["DATABASE_URL"] #if os.environ["DATABASE_URL"] else "localhost:3308" #if "PRODUCTION" in os.environ else "local
 
 
 class Configuration():

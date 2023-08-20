@@ -10,24 +10,18 @@ application.config.from_object(Configuration)
 
 Migrate(application, database)
 
-done = False
-while not done:
-    try:
-        if not database_exists(application.config["SQLALCHEMY_DATABASE_URI"]):
-            create_database(application.config["SQLALCHEMY_DATABASE_URI"])
+if not database_exists(application.config["SQLALCHEMY_DATABASE_URI"]):
+    create_database(application.config["SQLALCHEMY_DATABASE_URI"])
 
-        database.init_app(application)
+database.init_app(application)
 
-        with application.app_context() as context:
-            init()
-            migrate(message="Production migration")
-            upgrade()
+with application.app_context() as context:
+    init()
+    migrate(message="Production migration")
+    upgrade()
+    admin = User(forename="Scrooge", surname="McDuck", email="onlymoney@gmail.com", password="evenmoremoney", role="owner")
+    database.session.add(admin)
+    database.session.commit()
 
-            admin = User(forename="Scrooge", surname="McDuck", email="onlymoney@gmail.com", password="evenmoremoney", role="owner")
-            database.session.add(admin)
-            database.session.commit()
 
-            done = True
-    except Exception as error:
-        print(error)
-        sleep(1)
+
