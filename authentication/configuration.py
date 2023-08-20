@@ -7,5 +7,5 @@ databaseUrl=os.environ["DATABASE_URL"] if os.environ["DATABASE_URL"] else "local
 class Configuration():
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://root:123@{databaseUrl}/authentication"
     JWT_SECRET_KEY="JWT_SECRET_KEY"
-    JWT_ACCESS_TOKEN_EXPIRES=timedelta(minutes=15)
+    JWT_ACCESS_TOKEN_EXPIRES=timedelta(hours=1)
     JWT_REFRESH_TOKEN_EXPIRES=timedelta(days=30)

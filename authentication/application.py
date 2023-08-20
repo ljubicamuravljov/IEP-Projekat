@@ -28,18 +28,18 @@ def registerCustomer():
     forenameEmpty=len(forename)==0
     surnameEmpty=len(surname)==0
 
-    if emailEmpty :
-        return jsonify({"message":"Field email is missing."}),400
-    elif passwordEmpty:
-        return jsonify({"message":"Field password is missing."}),400
-    elif forenameEmpty:
-        return jsonify({"message":"Field forename is missing."}),400
+    if forenameEmpty:
+        return jsonify({"message": "Field forename is missing."}), 400
     elif surnameEmpty:
-        return jsonify({"message":"Field surname is missing."}),400
+        return jsonify({"message": "Field surname is missing."}), 400
+    elif emailEmpty:
+        return jsonify({"message": "Field email is missing."}), 400
+    elif passwordEmpty:
+        return jsonify({"message": "Field password is missing."}), 400
     elif not re.match(regEmail, email) or len(email)>256:
         return jsonify({"message": "Invalid email."}), 400
     elif len(password) < 8 or len(password) > 256:
-        return jsonify({"message": "Invalid password"}), 400
+        return jsonify({"message": "Invalid password."}), 400
 
 
     checkUser=User.query.filter(User.email == email).first()
@@ -62,19 +62,21 @@ def registerCourier():
     passwordEmpty=len(password)==0
     forenameEmpty=len(forename)==0
     surnameEmpty=len(surname)==0
-
-    if emailEmpty :
+    if forenameEmpty:
+        return jsonify({"message": "Field forename is missing."}), 400
+    elif surnameEmpty:
+        return jsonify({"message":"Field surname is missing."}),400
+    elif emailEmpty :
         return jsonify({"message":"Field email is missing."}),400
     elif passwordEmpty:
         return jsonify({"message":"Field password is missing."}),400
-    elif forenameEmpty:
-        return jsonify({"message":"Field forename is missing."}),400
-    elif surnameEmpty:
-        return jsonify({"message":"Field surname is missing."}),400
+
+
+
     elif not re.match(regEmail, email) or len(email)>256:
         return jsonify({"message": "Invalid email."}), 400
     elif len(password) < 8 or len(password) > 256:
-        return jsonify({"message": "Invalid password"}), 400
+        return jsonify({"message": "Invalid password."}), 400
 
 
     checkUser=User.query.filter(User.email == email).first()
@@ -117,10 +119,10 @@ def login():
         "roles":user.role
     }
 
-    accesToken=create_access_token(identity=user.email,additional_claims=additionalClaims)
+    accessToken=create_access_token(identity=user.email,additional_claims=additionalClaims)
 
     #return Response(accesToken,status=200)
-    return jsonify(accesToken=accesToken)
+    return jsonify(accessToken=accessToken)
 
 @application.route("/delete",methods=["POST"])
 @jwt_required()
