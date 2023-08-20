@@ -15,7 +15,7 @@ class User(database.Model):
     forename=database.Column(database.String(256),nullable=False)
     surname=database.Column(database.String(256),nullable=False)
 
-    role = database.Column(database.String(4), nullable=False)
+    role = database.Column(database.String(8), nullable=False)
 
 
 

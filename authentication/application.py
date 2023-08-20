@@ -46,7 +46,7 @@ def registerCustomer():
     if checkUser != None:
         return jsonify({"message": "Email already exists."}), 400
 
-    database.session.add(User(forename=forename, surname=surname, email=email, password=password, role="cust"))
+    database.session.add(User(forename=forename, surname=surname, email=email, password=password, role="customer"))
     database.session.commit()
 
     return Response(status=200)
@@ -81,7 +81,7 @@ def registerCourier():
     if checkUser is not None:
         return jsonify({"message": "Email already exists."}), 400
 
-    database.session.add(User(forename=forename, surname=surname, email=email, password=password, role="cour"))
+    database.session.add(User(forename=forename, surname=surname, email=email, password=password, role="courier"))
     database.session.commit()
 
     return Response(status=200)
@@ -136,7 +136,7 @@ def delete():
 
 @application.route("/", methods=["GET"])
 def index():
-    return "Hello world!"
+    return "Hello world!AA"
 
 
 

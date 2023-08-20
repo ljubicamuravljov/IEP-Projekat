@@ -1,33 +1,33 @@
+from time import sleep
 from flask import Flask
 from configuration import Configuration
-from flask_migrate import Migrate,init,migrate,upgrade
-from models import database, User
-from sqlalchemy_utils import database_exists,create_database
+from flask_migrate import Migrate, init, migrate, upgrade
+from models import database,User
+from sqlalchemy_utils import database_exists, create_database
 
-application= Flask(__name__)
+application = Flask(__name__)
 application.config.from_object(Configuration)
 
-migrateObject = Migrate(application,database)
+Migrate(application, database)
 
+done = False
+while not done:
+    try:
+        if not database_exists(application.config["SQLALCHEMY_DATABASE_URI"]):
+            create_database(application.config["SQLALCHEMY_DATABASE_URI"])
 
-#MOZDA OVO U JEDAN WHILE??? dont know
+        database.init_app(application)
 
-if( not database_exists(application.config["SQLALCHEMY_DATABASE_URI"])):
-    create_database(application.config["SQLALCHEMY_DATABASE_URI"])
+        with application.app_context() as context:
+            init()
+            migrate(message="Production migration")
+            upgrade()
 
-database.init_app(application)
+            admin = User(forename="Scrooge", surname="McDuck", email="onlymoney@gmail.com", password="evenmoremoney", role="owner")
+            database.session.add(admin)
+            database.session.commit()
 
-with application.app_context() as context:
-    init()
-    migrate(message="Production migration")
-    upgrade()
-
-    admin = User(forename="Scrooge", surname="McDuck", email="onlymoney@gmail.com", password="evenmoremoney",
-                 role="owner")
-
-    database.session.add(admin)
-
-    database.session.commit()
-
-
-
+            done = True
+    except Exception as error:
+        print(error)
+        sleep(1)
