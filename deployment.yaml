@@ -10,9 +10,9 @@ services:
       timeout: 10s
       retries: 10
     volumes:
-      - dbdata:/var/lib/mysql
+      - authData:/var/lib/mysql
     networks:
-      - mynet
+      - authNet
   authenticationDBMigration:
     image: authmigration
     environment:
@@ -20,7 +20,7 @@ services:
     depends_on:
       - authenticationDB
     networks:
-      - mynet
+      - authNet
   authentication:
     image: authentication
     environment:
@@ -30,9 +30,80 @@ services:
     ports:
       - 5002:5002
     networks:
-      - mynet
-volumes:
-  dbdata:
+      - authNet
 
+  shopAppDB:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=123
+    ports:
+      - "3307:3306"
+
+#      - sparknetwork
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 10s
+      retries: 10
+    volumes:
+      - shopData:/var/lib/mysql
+    networks:
+      - shopNet
+
+  shopDBmigration:
+    image: shopmigration
+    environment:
+      - DATABASE_URL=shopAppDB
+    depends_on:
+      - shopAppDB
+      #  condition: service_healthy
+    networks:
+      - shopNet
+#    build:
+#      context: .
+#      dockerfile: shopdbmigration.dockerfile
+
+  owner:
+    image: owner
+#    container_name: owner
+    environment:
+      - DATABASE_URL=shopAppDB
+#      - SPARKAPP_URL=sparkapp
+#      - ETH_URL=blockchain
+    depends_on:
+      - shopDBmigration
+#      - sparkapp
+    ports:
+      - 5000:5000
+    networks:
+      - shopNet
+#      - sparknetwork
+#      - ethnetwork
+#    build:
+#      context: .
+#      dockerfile: owner.dockerfile
+  customer:
+    image: customer
+#    container_name: owner
+    environment:
+      - DATABASE_URL=shopAppDB
+#      - SPARKAPP_URL=sparkapp
+#      - ETH_URL=blockchain
+    depends_on:
+      - shopDBmigration
+#      - sparkapp
+    ports:
+      - 5001:5001
+    networks:
+      - shopNet
+#      - sparknetwork
+#      - ethnetwork
+#    build:
+#      context: .
+#      dockerfile: owner.dockerfile
+volumes:
+  authData:
+  shopData:
 networks:
-  mynet:
+
+  authNet:
+  shopNet:
