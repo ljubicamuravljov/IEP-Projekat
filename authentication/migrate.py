@@ -2,7 +2,7 @@ from time import sleep
 from flask import Flask
 from configuration import Configuration
 from flask_migrate import Migrate, init, migrate, upgrade
-from models import database,User
+from models import database, User
 from sqlalchemy_utils import database_exists, create_database
 
 application = Flask(__name__)
@@ -19,9 +19,7 @@ with application.app_context() as context:
     init()
     migrate(message="Production migration")
     upgrade()
-    admin = User(forename="Scrooge", surname="McDuck", email="onlymoney@gmail.com", password="evenmoremoney", role="owner")
+    admin = User(forename="Scrooge", surname="McDuck", email="onlymoney@gmail.com", password="evenmoremoney",
+                 role="owner")
     database.session.add(admin)
     database.session.commit()
-
-
-

@@ -12,9 +12,9 @@ services:
     ports:
       - 8080:8080
 
-  authenticationDatabase:
-    image: mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=123
-    ports:
-      - 3308:3306
+#  authenticationDatabase:
+#    image: mysql
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=123
+#    ports:
+#      - 3308:3306
