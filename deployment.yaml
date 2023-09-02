@@ -8,12 +8,14 @@ services:
     networks:
       - authNet
       - shopNet
+      - blockNet
 
   #===================================================================================
   authenticationDB:
     image: mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=123
+      - MYSQL_ROOT_PASSWORD=123python main.py --type level2 --with-authentication --authentication-url http://127.0.0.1:5002 --owner-url http://127.0.0.1:5000 --customer-url http://127.0.0.1:5001 --courier-url http://127.0.0.1:5003 --with-blockchain --provider-url http://127.0.0.1:8545 --customer-keys-path ./keys.json --customer-passphrase iep_project --owner-private-key 0x36235650a86b1a3bde55bdbec6534e0cc381cfb4583e5aeaf7bf460f3a61db2e --courier-private-key 0x0b09208c2c4b83ac069b0abe853ef4d158fed8371ccc8c6ff711166a0d3a71c1
+
     healthcheck:
       test: ["CMD","mysqladmin","ping","-h","localhost"]
       timeout: 10s
@@ -122,7 +124,6 @@ services:
     image: shopmigration
     environment:
       - DATABASE_URL=shopAppDB
-#    restart: on-failure
     depends_on:
       shopAppDB:
         condition: service_healthy
@@ -139,7 +140,7 @@ services:
     environment:
       - DATABASE_URL=shopAppDB
       - SPARKAPP_URL=sparkapp
-#      - ETH_URL=blockchain
+      - BLOCKCHAIN_URL=blockchain
     depends_on:
       - shopDBmigration
       - sparkapp
@@ -149,7 +150,7 @@ services:
     networks:
       - shopNet
       - sparkNet
-#      - ethnetwork
+      - blockNet
 #    build:
 #      context: .
 #      dockerfile: owner.dockerfile
@@ -159,7 +160,7 @@ services:
     environment:
       - DATABASE_URL=shopAppDB
       - SPARKAPP_URL=sparkapp
-#      - ETH_URL=blockchain
+      - BLOCKCHAIN_URL=blockchain
     restart: on-failure
     depends_on:
       - shopDBmigration
@@ -169,7 +170,7 @@ services:
     networks:
       - shopNet
       - sparkNet
-#      - ethnetwork
+      - blockNet
 #    build:
 #      context: .
 #      dockerfile: owner.dockerfile
@@ -180,7 +181,7 @@ services:
     environment:
       - DATABASE_URL=shopAppDB
       - SPARKAPP_URL=sparkapp
-#      - ETH_URL=blockchain
+      - BLOCKCHAIN_URL=blockchain
     restart: on-failure
     depends_on:
       - shopDBmigration
@@ -190,8 +191,14 @@ services:
     networks:
       - shopNet
       - sparkNet
+      - blockNet
 
-
+  blockchain:
+    image: trufflesuite/ganache-cli
+    ports:
+      - "8545:8545"
+    networks:
+      - blockNet
 
 
 volumes:
@@ -203,3 +210,4 @@ networks:
   sparkNet:
   authNet:
   shopNet:
+  blockNet:

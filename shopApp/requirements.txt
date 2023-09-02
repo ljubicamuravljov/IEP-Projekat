@@ -13,3 +13,4 @@ werkzeug==2.0.3
 redis
 pyspark
 requests
+web3

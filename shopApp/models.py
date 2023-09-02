@@ -59,5 +59,5 @@ class Order(database.Model):
     status = database.Column(database.String(8), nullable=False, default="CREATED")
     timestamp = database.Column(database.DateTime, nullable=False)
     userEmail = database.Column(database.String(256), nullable=False)
-
+    address = database.Column(database.String(256))
     products = database.relationship("Product", secondary=OrderProducts.__table__, back_populates='orders')

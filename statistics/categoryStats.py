@@ -2,31 +2,21 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import desc, asc, col, sum, count
 import os, json
 
-# PRODUCTION = True if ("PRODUCTION" in os.environ) else False
-#
-# DATABASE_IP = os.environ["DATABASE_IP"] if ("DATABASE_IP" in os.environ) else "localhost"
-# builder = SparkSession.builder.appName("productStats") .config ("spark.driver.extraClassPath", "mysql-connector-j-8.0.33.jar")
-#
-# if ( not PRODUCTION ):
-#     builder = builder.master ( "local[*]" )\
-#                     .config (
-#                         "spark.driver.extraClassPath",
-#                         "mysql-connector-j-8.0.33.jar"
-#                     )
-# spark = builder.getOrCreate()
-#
-# spark.sparkContext.setLogLevel(logLevel="ERROR")
-
 PRODUCTION = True if ("PRODUCTION" in os.environ) else False
-DATABASE_IP = os.environ["DATABASE_URL"]  # if ("DATABASE_IP" in os.environ) else "localhost"
 
-builder = SparkSession.builder.appName("catStats")
+DATABASE_IP = os.environ["DATABASE_URL"] if ("DATABASE_URL" in os.environ) else "localhost"
+builder = SparkSession.builder.appName("catStats") .config ("spark.driver.extraClassPath", "mysql-connector-j-8.0.33.jar")
 
-if (not PRODUCTION):
-    builder = builder.master("local[*]")
+if ( not PRODUCTION ):
+    builder = builder.master ( "local[*]" )\
+                    .config (
+                        "spark.driver.extraClassPath",
+                        "mysql-connector-j-8.0.33.jar"
+                    )
+spark = builder.getOrCreate()
 
-spark = builder.config("spark.driver.extraClassPath", "mysql-connector-j-8.0.33.jar").getOrCreate()
 spark.sparkContext.setLogLevel(logLevel="ERROR")
+
 
 productDF = spark.read \
     .format("jdbc") \
@@ -124,29 +114,6 @@ orderProductsDF = spark.read \
 # for row in categoryDF:
 #     print(row)
 #
-# #OVO BRISES
-# # category_info = category_df.alias("category") \
-# # 	.join(product_category_df.alias("product_category"), col("category.id") == col("product_category.category_id"), "left") \
-# # 	.join(product_df.alias("product"), col("product_category.product_id") == col("product.id"), "left") \
-# # 	.join(order_product_df.alias("order_product"), col("product.id") == col("order_product.product_id"), "left") \
-# # 	.join(order_df.alias("order1"), col("order_product.order_id") == col("order1.id"), "left") \
-# # 	.groupBy("category.name") \
-# # 	.agg(sum(when(col("order1.status") == "COMPLETE", col("order_product.quantity")).otherwise(lit(0))).alias("sold")) \
-# # 	.orderBy(col("sold").desc(), col("category.name"))
-# #
-# # category_names = [str(row["name"]) for row in category_info.collect()]
-#
-#
-#
-#
-#
-# # Convert the list of Row objects to a list of strings
-# category_names = [row.name for row in result]
-#
-# # Create the JSON structure
-# json_result = {
-#     "statistics": category_names
-# }
 
 # Kreiranje privremenog pogleda za spajanje tablica
 order_products_with_categories = orderDF.alias("o").join(orderProductsDF.alias("op"),
@@ -178,7 +145,6 @@ json_result = {
     "statistics": [name[0] for name in sorted_category_stats]
 }
 
-# Convert the JSON structure to a JSON string
 json_string = json.dumps(json_result, indent=4)
 print(json_result)
 # print(json_result)

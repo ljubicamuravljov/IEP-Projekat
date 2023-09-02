@@ -4,6 +4,9 @@ import re
 
 from flask import Flask, request, Response, jsonify
 from datetime import datetime
+
+from web3.exceptions import ContractLogicError
+
 # from authentication.models import User
 from configuration import Configuration
 from models import database, Product, ProductCategories, Category, Order, OrderProducts
@@ -12,6 +15,7 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
     create_refresh_token
 
 from decorator import roleCheck
+from bcThings import  *
 
 application = Flask(__name__)
 application.config.from_object(Configuration)
@@ -56,6 +60,33 @@ def pickUpOrder():
 
     if order.status != "CREATED":
         return jsonify(message="Invalid order id."), 400
+
+
+    address=request.json.get("address","")
+    if len(address)==0:
+        return jsonify(message="Missing address."), 400
+
+
+
+    #SAD PROVERIS DA L ADDRESS VALJA AL BOG ZNA KAKO
+    if not web3.is_address(address):
+        return jsonify({"message": "Invalid address."}), 400
+
+
+
+    contract = web3.eth.contract(address=order.address, abi=abi)
+    try:
+        transaction = contract.functions.connectCurier(address).transact({
+            "from": ownerAccountBC,
+
+        })
+
+    except ContractLogicError as error:
+        return jsonify(message="Transfer not complete."),400
+    # except ValueError as e:
+    #     return jsonify(message= "Invalid customer account."), 400
+
+
 
     order.status = "PENDING"
     database.session.commit()

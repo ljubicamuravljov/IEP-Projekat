@@ -3,30 +3,19 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import desc, asc, col, sum
 import os, json
 
-# PRODUCTION = True if ("PRODUCTION" in os.environ) else False
-#
-# DATABASE_IP = os.environ["DATABASE_IP"] if ("DATABASE_IP" in os.environ) else "localhost"
-# builder = SparkSession.builder.appName("productStats") .config ("spark.driver.extraClassPath", "mysql-connector-j-8.0.33.jar")
-#
-# if ( not PRODUCTION ):
-#     builder = builder.master ( "local[*]" )\
-#                     .config (
-#                         "spark.driver.extraClassPath",
-#                         "mysql-connector-j-8.0.33.jar"
-#                     )
-# spark = builder.getOrCreate()
-#
-# spark.sparkContext.setLogLevel(logLevel="ERROR")
-
 PRODUCTION = True if ("PRODUCTION" in os.environ) else False
-DATABASE_IP = os.environ["DATABASE_URL"] #if ("DATABASE_IP" in os.environ) else "localhost"
 
-builder = SparkSession.builder.appName("prodStats")
+DATABASE_IP = os.environ["DATABASE_URL"] if ("DATABASE_URL" in os.environ) else "localhost"
+builder = SparkSession.builder.appName("productStats") .config ("spark.driver.extraClassPath", "mysql-connector-j-8.0.33.jar")
 
-if (not PRODUCTION):
-    builder = builder.master("local[*]")
+if ( not PRODUCTION ):
+    builder = builder.master ( "local[*]" )\
+                    .config (
+                        "spark.driver.extraClassPath",
+                        "mysql-connector-j-8.0.33.jar"
+                    )
+spark = builder.getOrCreate()
 
-spark = builder.config("spark.driver.extraClassPath", "mysql-connector-j-8.0.33.jar").getOrCreate()
 spark.sparkContext.setLogLevel(logLevel="ERROR")
 
 
@@ -39,14 +28,6 @@ productDF = spark.read \
     .option ( "password", "root" ) \
     .load ( )
 
-# categoryDF = spark.read \
-#     .format ( "jdbc" ) \
-#     .option ( "driver","com.mysql.cj.jdbc.Driver" ) \
-#     .option ( "url", f"jdbc:mysql://{DATABASE_IP}:3306/shopDB" ) \
-#     .option ( "dbtable", "shopDB.category" ) \
-#     .option ( "user", "root" ) \
-#     .option ( "password", "root" ) \
-#     .load ( )
 
 orderDF = spark.read \
     .format ( "jdbc" ) \
