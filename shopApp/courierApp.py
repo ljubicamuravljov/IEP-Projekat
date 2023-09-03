@@ -11,11 +11,12 @@ from web3.exceptions import ContractLogicError
 from configuration import Configuration
 from models import database, Product, ProductCategories, Category, Order, OrderProducts
 
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt, get_jwt_identity, \
-    create_refresh_token
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt, get_jwt_identity, create_refresh_token
+
+from bcThings import *
 
 from decorator import roleCheck
-from bcThings import  *
+
 
 application = Flask(__name__)
 application.config.from_object(Configuration)

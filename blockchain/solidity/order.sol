@@ -35,7 +35,7 @@ contract Order {
         _;
     }
     modifier notPaid(){
-        require(paid == false, "Transfer already complete");
+        require(paid == false, "Transfer already complete.");
         _;
     }
 
@@ -110,8 +110,10 @@ contract Order {
     alreadyPickedUp
     {
         confirmed = true;
-        uint own = (price * 80) / 100;
-        uint cour = (price * 20) / 100;
+
+        uint val = address(this).balance;
+        uint own = (val * 80) / 100;
+        uint cour = (val * 20) / 100;
         owner.transfer(own);
         courier.transfer(cour);
     }

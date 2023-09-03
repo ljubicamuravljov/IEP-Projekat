@@ -209,7 +209,7 @@ def delivered():
     if order.status != "PENDING":
         return jsonify(message="Invalid order id."), 400
 
-    if keys is None:
+    if keys is None or len(keys)==0:
         return jsonify(message="Missing keys."), 400
     if len(passphrase)==0:
         return jsonify(message="Missing passphrase."), 400
@@ -284,9 +284,13 @@ def pay():
     except ValueError:
         return {"message": "Invalid credentials."}, 400
 
-    if address.balance < order.price:
-        return {"message": "Insufficient funds. PRVI"}, 400
+    # if address.balance < order.price:
+    #     return {"message": "Insufficient funds. PRVI"}, 400
 
+    print("BALANCE",flush=True)
+    print(web3.eth.get_balance(address),flush=True)
+    print("ORDER PRICE",flush=True)
+    print(order.price,flush=True)
     if web3.eth.get_balance(address) < order.price:
         return jsonify(message="Insufficient funds."), 400
     contract = web3.eth.contract(address=order.address, abi=abi,bytecode=bytecode)
