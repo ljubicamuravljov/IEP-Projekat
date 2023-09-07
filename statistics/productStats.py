@@ -92,7 +92,6 @@ json_result = {
     "statistics": statsList
 }
 
-# Convert the JSON structure to a JSON string
 json_string = json.dumps(json_result, indent=4)
 # print(result)
 # print(json_result)

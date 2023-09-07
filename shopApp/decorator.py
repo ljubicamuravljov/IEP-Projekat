@@ -1,12 +1,11 @@
 from functools import wraps
 
 from flask import Response, jsonify
-from flask_jwt_extended import verify_jwt_in_request, get_jwt, jwt_required
+from flask_jwt_extended import verify_jwt_in_request, get_jwt
 
 
 def roleCheck(role):
     def innerRole(function):
-        # @jwt_required()
         @wraps(function)
         def decorater(*arguments, **keywordArguments):
             verify_jwt_in_request()

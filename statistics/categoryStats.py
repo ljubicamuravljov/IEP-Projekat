@@ -62,58 +62,6 @@ orderProductsDF = spark.read \
     .option("user", "root") \
     .option("password", "root") \
     .load()
-# Kreirajte Spark sesiju
-
-
-# # # Učitajte DataFrame-ove
-# # product_categories_df = spark.table("productcategories")
-# # categories_df = spark.table("category")
-#
-# ## Treba da joinujem order sa orderproduct sa productcateory, groupby cateory i onda check complete i to
-# print("ORDER DF")
-# print(orderDF)
-#
-#
-# orderProductsCompleteDF= orderProductsDF.alias("op").join(
-#     orderDF.alias("o"), col("op.orderId")==col("o.id")
-# ).filter(col("o.status")=="COMPLETE")
-#
-# # orderProductsCompleteDF=orderProductsDF.join(orderDF,orderDF["id"]==orderProductsDF["orderId"]).filter(orderDF["status"]=="COMPLETE")
-# # sad imam samo komplitovane porudzbine, sad njih joinujem sa productCategories
-# print ("order product completed")
-# print(orderProductsCompleteDF)
-#
-# # tmpDF= categoryDF.alias("c").join(
-# #     productCategoriesDF.alias("pc"), col("pc.categoryId")==col("c.id")
-# # ).join(orderProductsCompleteDF.alias("opc"),col("pc.productId")==col("opc.productId"))
-# # # tm1=categoryDF.join(productCategoriesDF,categoryDF["id"]==productCategoriesDF["categoryId"])
-# # # tmpDF= tm1.join(orderProductsCompleteDF,tm1["cateoryId"]==orderProductsCompleteDF["categoryId"],"left_outer")
-# #
-# # #odavde spojis sa category da izvuces name
-# #
-# # print ("category completed")
-# # print(tmpDF)
-# # grupisanDf=tmpDF.groupBy("categoryId").agg(count("pc.productId").alias("product_count"))
-# #
-# # print("grupisani")
-# # print(grupisanDf)
-# #
-# # sortiraniDF=grupisanDf.orderBy(desc("product_count"),asc("c.name"))
-# # # Create a DataFrame with the count of delivered products per category
-# # productCountDF = productCategoriesDF.groupBy("categoryId").agg(count("productId").alias("product_count"))
-# #
-# # # Join categories with product counts
-# # categoryStatsDF = categoryDF.join(productCountDF, categoryDF["id"] == productCountDF["cateoryId"], "left_outer")
-# #
-# # # Sort the DataFrame by product count and name
-# # sorted_category_stats_df = categoryStatsDF.orderBy(desc("product_count"), asc("name"))
-# #
-# # # Show the array of category names
-# # result = sortiraniDF.select("c.name").collect()
-# print(categoryDF)
-# for row in categoryDF:
-#     print(row)
-#
 
 # Kreiranje privremenog pogleda za spajanje tablica
 order_products_with_categories = orderDF.alias("o").join(orderProductsDF.alias("op"),
@@ -134,7 +82,6 @@ sorted_category_stats = (
     category_product_counts_with_names
     .orderBy(desc("productCount"), asc("c.name"))
     .select("c.name")
-    # .rdd.flatMap(lambda x: x)
     .collect()
 )
 print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!SORTEDSVEKRAJ")
@@ -147,7 +94,7 @@ json_result = {
 
 json_string = json.dumps(json_result, indent=4)
 print(json_result)
-# print(json_result)
+
 
 print(json_string)
 with open("/app/catStat.json", "w+") as f:

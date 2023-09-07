@@ -1,4 +1,3 @@
-// SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.4;
 
 contract Order {
@@ -6,10 +5,6 @@ contract Order {
     address payable public owner;
     address payable public courier;
     address public customer;
-    //
-    //    enum Status { Created, Pending, Complete }
-    // The state variable has a default value of the first member, `State.created`
-    //    Status public status;
 
     bool paid = false;
     bool confirmed = false;
@@ -68,9 +63,7 @@ contract Order {
         require(confirmed == false, "Already confirmed!");
         _;
     }
-    // Ensure that `msg.value` is an even number.
-    // Division will truncate if it is an odd number.
-    // Check via multiplication that it wasn't an odd number.
+
     constructor (address cust, uint pric) {
         owner = payable(msg.sender);
         customer = cust;
@@ -78,10 +71,7 @@ contract Order {
     }
 
 
-    /// Confirm the purchase as buyer.
-    /// Transaction has to include `2 * value` ether.
-    /// The ether will be locked until confirmReceived
-    /// is called.
+
     function pay()
     external
     onlyCustomer

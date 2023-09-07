@@ -34,7 +34,6 @@ def category_statistics():
 
     rez = json.load(file)
     print(rez)
-    # rez.append(data)  # dodas jedan po jedan red a red je json obj sta si procitala od statistika
 
     file.close()
 
@@ -52,8 +51,6 @@ def product_statistics():
     file= open("app/prodStat.json","r")
     # for row in file:
     rez=json.load(file)
-        # print(data)
-        # rez.append(data) # dodas jedan po jedan red a red je json obj sta si procitala od statistika
 
     file.close()
 

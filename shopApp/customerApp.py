@@ -102,7 +102,6 @@ def order():
         return jsonify(message="Invalid address."), 400
 
     email = get_jwt_identity()
-    # allProductsList=[]
     totalPrice = 0
     newOrder = Order(timestamp=datetime.now(), userEmail=email,address=address)
     database.session.add(newOrder)
@@ -143,7 +142,7 @@ def order():
     receipt = web3.eth.wait_for_transaction_receipt(hash)
 
     newOrder.address=receipt.contractAddress
-    # database.session.add(newOrder.)
+
     database.session.commit()
 
 

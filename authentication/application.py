@@ -105,8 +105,6 @@ def login():
         return jsonify(message="Field password is missing."), 400
     elif not re.match(regEmail, email) or len(email) > 256:
         return jsonify(message="Invalid email."), 400
-    # elif len(password) < 8 or len(password) > 256:
-    #     return jsonify({"message": "Invalid password"}), 400
 
     user = User.query.filter(and_(User.email == email, User.password == password)).first()
 
@@ -121,7 +119,6 @@ def login():
 
     accessToken = create_access_token(identity=user.email, additional_claims=additionalClaims)
 
-    # return Response(accesToken,status=200)
     return jsonify(accessToken=accessToken)
 
 

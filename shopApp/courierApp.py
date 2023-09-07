@@ -84,8 +84,7 @@ def pickUpOrder():
 
     except ContractLogicError as error:
         return jsonify(message="Transfer not complete."),400
-    # except ValueError as e:
-    #     return jsonify(message= "Invalid customer account."), 400
+
 
 
 
